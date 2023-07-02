@@ -19,24 +19,24 @@ export const addCartItem = (cartItems, productToAdd) => {
     return [ ...cartItems, {...productToAdd, quantity:1 } ]
 }
 
-export const removeCartItem = (cartItems, itemToRemove, isDelete) => {
+export const clearCartItem = (cartItems, itemToClear) => {
+    return cartItems.filter((cartItem)=>
+        cartItem.id !== itemToClear.id
+    )
+}
+
+export const removeCartItem = (cartItems, itemToRemove) => {
     // find the cart Item to remove
     const existingCartItem = cartItems.find(
         (cartItem)=>cartItem.id === itemToRemove.id
     );
 
-    if(isDelete || existingCartItem.quantity === 1){
+    // check the quantity is equal to 1, if it is remove that item from the cart
+    if(existingCartItem.quantity === 1 ){
         return cartItems.filter((cartItem)=>
             cartItem.id !== itemToRemove.id
         )
     }
-
-    // check the quantity is equal to 1, if it is remove that item from the cart
-    // if(existingCartItem.quantity === 1 ){
-    //     return cartItems.filter((cartItem)=>
-    //         cartItem.id !== itemToRemove.id
-    //     )
-    // }
 
     // return back cartitems with matching cart item with reduced quantity
     return cartItems.map((cartItem)=>
@@ -72,11 +72,23 @@ export const CartProvider = ({children}) => {
         setCartItems(addCartItem(cartItems, productToAdd))
     }
 
-    const removeItemFromCart = (itemToRemove, isDelete) => {
-        setCartItems(removeCartItem(cartItems, itemToRemove, isDelete))
+    const removeItemFromCart = (itemToRemove) => {
+        setCartItems(removeCartItem(cartItems, itemToRemove))
     }
 
-    const value = { isCartOpen, setIsCartOpen, addItemToCart, cartItems, cartCount, removeItemFromCart };
+    const clearItemFromCart = (itemToClear) => {
+        setCartItems(clearCartItem(cartItems, itemToClear))
+    }
+
+    const value = { 
+        isCartOpen,
+        setIsCartOpen,
+        addItemToCart,
+        cartItems,
+        cartCount,
+        removeItemFromCart,
+        clearItemFromCart
+    };
 
     
 
